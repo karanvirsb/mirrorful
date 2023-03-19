@@ -15,16 +15,15 @@ import {
   InputRightElement,
   IconButton,
   InputGroup,
-  Tooltip,
+  Checkbox,
 } from '@chakra-ui/react'
-import { InfoIcon } from '@chakra-ui/icons'
 import { TColorData } from 'types'
 import { useState, useRef } from 'react'
-import { handleInvalidColor } from './utils'
+import { generateDefaultColorShades, handleInvalidColor } from './utils'
 import { ColorPicker } from './ColorPicker'
 import { Color } from '@hello-pangea/color-picker'
-
-const INITIAL_COLOR_PICKER_COLOR = '#000000'
+import tinycolor from 'tinycolor2'
+import { FaMagic } from 'react-icons/fa'
 
 export function EditColorModal({
   isOpen,
@@ -37,13 +36,15 @@ export function EditColorModal({
 }) {
   const baseRef = useRef<HTMLInputElement | null>(null)
   const hoverRef = useRef<HTMLInputElement | null>(null)
+  const activeColorRef = useRef<HTMLInputElement | null>(null)
 
   const presetColors: string[] = []
   const [name, setName] = useState<string>(initialColorData?.name ?? '')
   const [base, setBase] = useState<string>(initialColorData?.baseColor ?? '')
+  const [shouldGenerateVariants, setShouldGenerateVariants] = useState(false)
 
   const [colorPickerColor, setColorPickerColor] = useState<Color>(
-    initialColorData?.baseColor ?? INITIAL_COLOR_PICKER_COLOR
+    initialColorData?.baseColor ?? '#000000'
   )
 
   const [showBaseColorPicker, setShowBaseColorPicker] = useState<boolean>(true)
@@ -59,14 +60,12 @@ export function EditColorModal({
     onClose({
       name,
       baseColor: base,
-      variants: {
-        '500': base,
-      },
+      variants: shouldGenerateVariants
+        ? generateDefaultColorShades(base)
+        : {
+            '500': base,
+          },
     })
-
-    setName('')
-    setBase('')
-    setColorPickerColor(INITIAL_COLOR_PICKER_COLOR)
   }
 
   return (
@@ -84,32 +83,23 @@ export function EditColorModal({
             gap: 24,
           }}
         >
-          <Flex flexDirection="column" flex="1">
+          <Flex flexDirection="column" flex="1" gap={4}>
             <FormControl>
-                <Flex>
-                  <FormLabel>Variable Name</FormLabel>
-                  <Tooltip
-                  placement="right"
-                  closeDelay={500}
-                  hasArrow
-                  label={"Variable names don't need a hyphen."}>
-                  <InfoIcon css={{ marginTop: '5px', marginLeft: '-6px' }} />
-                  </Tooltip>
-                </Flex>
-                <Input
-                  placeholder="e.g. Pepsi Blue"
-                  size="md"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  onFocus={(e) => {
-                    setShowBaseColorPicker(true)
-                  }}
-                  onKeyPress={(event) => {
-                    if (event.key === 'Enter' && baseRef.current) {
-                      baseRef.current.focus()
-                    }
-                  }}
-                />
+              <FormLabel>Variable Name</FormLabel>
+              <Input
+                placeholder="e.g. Pepsi Blue"
+                size="md"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onFocus={(e) => {
+                  setShowBaseColorPicker(true)
+                }}
+                onKeyPress={(event) => {
+                  if (event.key === 'Enter' && baseRef.current) {
+                    baseRef.current.focus()
+                  }
+                }}
+              />
             </FormControl>
             <FormControl css={{ marginTop: 16 }}>
               <FormLabel>
@@ -143,11 +133,20 @@ export function EditColorModal({
                 }}
               />
             </FormControl>
+            <FormControl>
+              <Checkbox
+                checked={shouldGenerateVariants}
+                onChange={() => setShouldGenerateVariants((prev) => !prev)}
+                defaultChecked={shouldGenerateVariants}
+              >
+                Automatically Generate Variants
+              </Checkbox>
+            </FormControl>
           </Flex>
           <Box flex="1">
             {showBaseColorPicker && (
               <ColorPicker
-                onChange={(colorPickerColor) => {
+                onChange={(colorPickerColor, event) => {
                   setBase(colorPickerColor.hex)
                 }}
                 colorPickerColor={colorPickerColor}
