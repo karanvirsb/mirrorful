@@ -1,3 +1,4 @@
+import { SpinnerIcon } from '@chakra-ui/icons'
 import { Box, useDisclosure } from '@chakra-ui/react'
 import { ColorPaletteSection } from '@core/components/ColorPalette/ColorPaletteSection'
 import { ExportSettingsModal } from '@core/components/ExportSettingsModal'
@@ -27,6 +28,7 @@ export function Dashboard({
   postStoreData: (data: TConfig) => Promise<void>
   platform?: TPlatform
 }) {
+  const [isLoading, setIsLoading] = useState(true)
   const [tab, setTab] = useState<'colors' | 'typography'>('colors')
   const [shouldForceSkipOnboarding, setShouldForceSkipOnboarding] =
     useState<boolean>(false)
@@ -51,6 +53,7 @@ export function Dashboard({
   } = useDisclosure()
 
   useEffect(() => {
+    let loading: NodeJS.Timeout
     const fetchStoredData = async () => {
       const data = await fetchStoreData()
 
@@ -60,15 +63,22 @@ export function Dashboard({
         data.tokens.colorData.length === 0
       ) {
         setShowOnboarding(true)
+        loading = setTimeout(() => {
+          setIsLoading(false)
+        }, 5000)
         return
       }
 
       setColors(data.tokens.colorData ?? [])
       setTypography(data.tokens.typography)
       setFileTypes(data.files)
+      loading = setTimeout(() => {
+        setIsLoading(false)
+      }, 5000)
     }
 
     fetchStoredData()
+    return () => clearTimeout(loading)
   }, [showOnboarding])
 
   const handleExport = async () => {
@@ -97,6 +107,17 @@ export function Dashboard({
       tokens: { colorData: colors, typography: data },
       files: fileTypes,
     })
+  }
+
+  if (isLoading) {
+    return (
+      <Box
+        minHeight="100svh"
+        css={{ display: 'grid', placeContent: 'center', placeItems: 'center' }}
+      >
+        <SpinnerIcon></SpinnerIcon>
+      </Box>
+    )
   }
 
   if (!shouldForceSkipOnboarding && showOnboarding) {
