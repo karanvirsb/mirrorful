@@ -2,6 +2,7 @@ import '../main.css'
 import '../atom-one-dark.css'
 
 import { MirrorfulThemeProvider } from '@mirrorful/core/lib/components/ThemeProvider'
+import useBearStore from '@mirrorful/core/lib/zustand'
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import posthog from 'posthog-js'
@@ -19,7 +20,7 @@ if (typeof window !== 'undefined') {
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
-
+  const bears = useBearStore((state) => bears)
   useEffect(() => {
     // Track page views
     const handleRouteChange = () => posthog.capture('$pageview')
