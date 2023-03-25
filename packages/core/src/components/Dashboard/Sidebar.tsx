@@ -1,4 +1,5 @@
 import { Badge, Box, Icon, Stack, Text } from '@chakra-ui/react'
+import { VERSION } from '@core/utils/constants'
 import { useState } from 'react'
 import { IconType } from 'react-icons'
 import {
@@ -7,6 +8,7 @@ import {
   FiFolder,
   FiGithub,
   FiGrid,
+  FiLayers,
   FiSettings,
   FiUnderline,
 } from 'react-icons/fi'
@@ -28,44 +30,48 @@ function SidebarHeader({ label }: { label: string }) {
   )
 }
 
-function SidebarSection({
+function SidebarLink({
   label,
   icon,
   isActive,
   onSelect,
   isComingSoon,
+  isDisabled,
 }: {
   label: string
   icon: IconType
   isActive?: boolean
   onSelect?: () => void
   isComingSoon?: boolean
+  isDisabled?: boolean
 }) {
   const [isHovering, setIsHovering] = useState<boolean>(false)
 
-  const fontSize = '1.3rem'
+  const fontSize = '1.2rem'
+
+  const isActiveState = !isDisabled && (isHovering || isActive)
 
   return (
     <Box
       css={{
         display: 'flex',
         alignItems: 'center',
-        color: isHovering || isActive ? 'black' : 'gray',
+        color: isActiveState ? 'black' : 'gray',
         cursor: isComingSoon ? 'initial' : 'pointer',
         transition: '200ms',
       }}
       onMouseOver={() => {
-        if (!isComingSoon) {
+        if (!isComingSoon || isDisabled) {
           setIsHovering(true)
         }
       }}
       onMouseLeave={() => {
-        if (!isComingSoon) {
+        if (!isComingSoon || isDisabled) {
           setIsHovering(false)
         }
       }}
       onClick={() => {
-        if (!isComingSoon && onSelect) {
+        if (!isComingSoon && !isDisabled && onSelect) {
           onSelect()
         }
       }}
@@ -89,18 +95,37 @@ function SidebarSection({
   )
 }
 
+export function SidebarSection({
+  header,
+  children,
+}: {
+  header: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <Box>
+      {header}
+      <Stack spacing={'12px'} marginTop={'16px'}>
+        {children}
+      </Stack>
+    </Box>
+  )
+}
+
 export function Sidebar({
   platform,
   activeTab,
   onSelectTab,
   onOpenSettings,
   onExport,
+  isDisabled,
 }: {
   platform: TPlatform
   activeTab: string
   onSelectTab: (tab: TTab) => void
   onOpenSettings: () => void
   onExport: () => void
+  isDisabled?: boolean
 }) {
   return (
     <Box
@@ -132,51 +157,68 @@ export function Sidebar({
             marginTop: '20%',
           }}
         >
-          <Box>
-            <SidebarHeader label="Tokens" />
-            <Stack spacing={'24px'} css={{ marginTop: '24px' }}>
-              <SidebarSection
-                label="Colors"
-                icon={FiAperture}
-                isActive={activeTab === 'colors'}
-                onSelect={() => onSelectTab('colors')}
-              />
-              <SidebarSection
-                label="Typography"
-                icon={FiUnderline}
-                isActive={activeTab === 'typography'}
-                onSelect={() => onSelectTab('typography')}
-              />
-              <SidebarSection label="Spacing" icon={FiGrid} isComingSoon />
-            </Stack>
-          </Box>
+          <SidebarSection header={<SidebarHeader label="Primitives" />}>
+            <SidebarLink
+              key="sidebar-colors"
+              label="Colors"
+              icon={FiAperture}
+              isActive={activeTab === 'colors'}
+              onSelect={() => onSelectTab('colors')}
+              isDisabled={isDisabled}
+            />
 
-          <Stack spacing={24}>
-            <Stack>
-              <SidebarHeader label="Export" />
-              <SidebarSection
-                label="Export Tokens"
-                icon={FiFolder}
-                onSelect={() => onExport()}
+            <SidebarLink
+              key="sidebar-typography"
+              label="Typography"
+              icon={FiUnderline}
+              isActive={activeTab === 'typography'}
+              onSelect={() => onSelectTab('typography')}
+              isDisabled={isDisabled}
+            />
+
+            <SidebarLink
+              key="sidebar-shadows"
+              label="Shadows"
+              icon={FiLayers}
+              isActive={activeTab === 'shadows'}
+              onSelect={() => onSelectTab('shadows')}
+              isDisabled={isDisabled}
+            />
+            <SidebarLink
+              key="sidebar-spacing"
+              label="Spacing"
+              icon={FiGrid}
+              isComingSoon
+              isDisabled={isDisabled}
+            />
+          </SidebarSection>
+
+          <SidebarSection header={<SidebarHeader label="Export" />}>
+            <SidebarLink
+              label="Export Tokens"
+              icon={FiFolder}
+              onSelect={() => onExport()}
+            />
+            {platform === 'package' && (
+              <SidebarLink
+                label="Settings"
+                icon={FiSettings}
+                onSelect={() => onOpenSettings()}
+                isDisabled={isDisabled}
               />
-              {platform === 'package' && (
-                <SidebarSection
-                  label="Settings"
-                  icon={FiSettings}
-                  onSelect={() => onOpenSettings()}
-                />
-              )}
-            </Stack>
-            <Stack>
-              <SidebarHeader label="Resources" />
-              <SidebarSection
+            )}
+          </SidebarSection>
+
+          <Box>
+            <SidebarSection header={<SidebarHeader label="Resources" />}>
+              <SidebarLink
                 label="Documentation"
                 icon={FiBookOpen}
                 onSelect={() =>
                   window.open('https://mirrorful.com/docs', '_blank')
                 }
               />
-              <SidebarSection
+              <SidebarLink
                 label="Github"
                 icon={FiGithub}
                 onSelect={() =>
@@ -186,8 +228,13 @@ export function Sidebar({
                   )
                 }
               />
-            </Stack>
-          </Stack>
+            </SidebarSection>
+            <Box css={{ marginTop: '32px' }}>
+              <Text fontWeight="bold" color="gray.400">
+                {platform === 'web' ? 'WEB' : 'PACKAGE'} BETA {VERSION}
+              </Text>
+            </Box>
+          </Box>
         </Box>
       </Box>
     </Box>
