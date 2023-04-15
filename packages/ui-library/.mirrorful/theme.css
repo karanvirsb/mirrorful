@@ -1,0 +1,62 @@
+:root {
+  --color-medium-purple-50: #fefeff;
+  --color-medium-purple-100: #ebe4fb;
+  --color-medium-purple-200: #d8c9f7;
+  --color-medium-purple-300: #c5aff2;
+  --color-medium-purple-400: #b294ee;
+  --color-medium-purple-500: #9f7aea;
+  --color-medium-purple-600: #8c60e6;
+  --color-medium-purple-700: #7945e2;
+  --color-medium-purple-800: #662bdd;
+  --color-medium-purple-900: #5820ca;
+  --color-medium-purple-base: #9f7aea;
+  --color-spray-50: #feffff;
+  --color-spray-100: #e4fbfa;
+  --color-spray-200: #c9f7f5;
+  --color-spray-300: #aff2f1;
+  --color-spray-400: #94eeec;
+  --color-spray-500: #7aeae7;
+  --color-spray-600: #60e6e2;
+  --color-spray-700: #45e2dd;
+  --color-spray-800: #2bddd9;
+  --color-spray-900: #20cac5;
+  --color-spray-base: #7aeae7;
+  --color-froly-50: #fffefe;
+  --color-froly-100: #fbe4e4;
+  --color-froly-200: #f7c9c9;
+  --color-froly-300: #f2afaf;
+  --color-froly-400: #ee9494;
+  --color-froly-500: #ea7a7a;
+  --color-froly-600: #e66060;
+  --color-froly-700: #e24545;
+  --color-froly-800: #dd2b2b;
+  --color-froly-900: #ca2020;
+  --color-froly-base: #ea7a7a;
+  --color-sulu-50: #fffffe;
+  --color-sulu-100: #f2fbe4;
+  --color-sulu-200: #e5f7c9;
+  --color-sulu-300: #d8f2af;
+  --color-sulu-400: #cbee94;
+  --color-sulu-500: #beea7a;
+  --color-sulu-600: #b1e660;
+  --color-sulu-700: #a4e245;
+  --color-sulu-800: #97dd2b;
+  --color-sulu-900: #87ca20;
+  --color-sulu-base: #beea7a;
+  --font-size-sm: 1rem;
+  --font-size-md: 1.2rem;
+  --font-size-lg: 1.4rem;
+  --font-weight-light: 200;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  --line-height-short: 1;
+  --line-height-normal: 1.5;
+  --line-height-tall: 2;
+  --box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --box-shadow-md: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --box-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --box-shadow-dark-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
