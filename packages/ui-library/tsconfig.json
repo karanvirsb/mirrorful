@@ -22,7 +22,8 @@
     "lib",
     "tsconfig.json",
     "src/stories/**/*",
-    "src/.storybook/**/*"
+    "src/.storybook/**/*",
+    "*.tgz"
   ],
   "tsc-alias": {
     "verbose": true
